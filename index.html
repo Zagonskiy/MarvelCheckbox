@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MARVEL Tracker</title>
+    <title>MARVEL Tracker v2.0</title>
     <style>
-        /* Подключаем стильные шрифты для заголовков и текста */
         @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Roboto:wght@400;500&display=swap');
 
         :root {
@@ -16,11 +15,7 @@
             --text-muted: #888888;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
             font-family: 'Roboto', sans-serif;
@@ -31,11 +26,9 @@
             align-items: center;
             min-height: 100vh;
             padding: 40px 20px;
-            /* Легкий радиальный градиент для глубины фона */
             background-image: radial-gradient(circle at top center, #2a2a2a 0%, #151515 70%);
         }
 
-        /* Стиль логотипа Marvel */
         .logo {
             font-family: 'Oswald', sans-serif;
             background-color: var(--marvel-red);
@@ -52,7 +45,7 @@
 
         .container {
             width: 100%;
-            max-width: 900px;
+            max-width: 1000px;
             background: var(--panel-bg);
             border-radius: 8px;
             box-shadow: 0 15px 40px rgba(0,0,0,0.6);
@@ -60,157 +53,117 @@
             border: 1px solid #333;
         }
 
-        /* Панель добавления нового фильма */
+        /* Обновленная панель управления */
         .controls {
             display: flex;
             padding: 20px;
-            gap: 15px;
+            gap: 12px;
             background: #1a1a1a;
             border-bottom: 3px solid var(--marvel-red);
+            flex-wrap: wrap;
         }
 
-        .controls input[type="text"] {
-            flex-grow: 1;
-            padding: 15px;
+        .controls input {
+            padding: 12px;
             border: 2px solid #333;
             border-radius: 4px;
             background: #111;
             color: white;
-            font-size: 1.1rem;
+            font-size: 1rem;
             outline: none;
             transition: border-color 0.3s;
         }
 
-        .controls input[type="text"]:focus {
-            border-color: var(--marvel-red);
-        }
+        #movieInput { flex-grow: 2; min-width: 250px; }
+        #seasonInput { width: 100px; text-align: center; }
+
+        .controls input:focus { border-color: var(--marvel-red); }
 
         .controls button {
             font-family: 'Oswald', sans-serif;
             background-color: var(--marvel-red);
             color: white;
             border: none;
-            padding: 0 30px;
-            font-size: 1.2rem;
+            padding: 0 25px;
+            font-size: 1.1rem;
             text-transform: uppercase;
             cursor: pointer;
             border-radius: 4px;
             transition: background 0.2s, transform 0.1s;
         }
 
-        .controls button:hover {
-            background-color: #ff2a31;
-        }
+        .controls button:hover { background-color: #ff2a31; }
+        .controls button:active { transform: scale(0.97); }
 
-        .controls button:active {
-            transform: scale(0.97);
-        }
+        .table-wrapper { max-height: 65vh; overflow-y: auto; }
+        .table-wrapper::-webkit-scrollbar { width: 8px; }
+        .table-wrapper::-webkit-scrollbar-thumb { background: var(--marvel-red); border-radius: 4px; }
 
-        /* Таблица фильмов */
-        .table-wrapper {
-            max-height: 60vh;
-            overflow-y: auto;
-        }
-
-        /* Кастомизация скроллбара */
-        .table-wrapper::-webkit-scrollbar { width: 10px; }
-        .table-wrapper::-webkit-scrollbar-track { background: #1a1a1a; }
-        .table-wrapper::-webkit-scrollbar-thumb { background: var(--marvel-red); border-radius: 5px; }
-
-        .movie-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
+        .movie-table { width: 100%; border-collapse: collapse; }
         .movie-table th {
             font-family: 'Oswald', sans-serif;
             text-transform: uppercase;
             background: #111;
             color: var(--text-muted);
-            padding: 15px 20px;
+            padding: 15px;
             text-align: left;
-            font-size: 1.2rem;
-            letter-spacing: 1px;
             position: sticky;
             top: 0;
             z-index: 10;
-            border-bottom: 1px solid #333;
-        }
-
-        .movie-table th.center {
-            text-align: center;
-            width: 150px;
         }
 
         .movie-table td {
-            padding: 15px 20px;
+            padding: 12px 15px;
             border-bottom: 1px solid #2a2a2a;
-            font-size: 1.1rem;
-            transition: all 0.3s;
-        }
-
-        .movie-table tr:hover td {
-            background: rgba(236, 29, 36, 0.05);
-        }
-
-        .movie-table td.center {
-            text-align: center;
-        }
-
-        .unreleased-tag {
-            display: inline-block;
-            color: var(--marvel-red);
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            margin-left: 12px;
-            font-weight: bold;
-            border: 1px solid var(--marvel-red);
-            padding: 3px 8px;
-            border-radius: 3px;
             vertical-align: middle;
         }
 
-        /* Стиль просмотренного фильма */
-        .row-watched .title-cell {
+        /* Контейнер для чекбоксов сезонов */
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .season-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .season-label {
+            font-size: 0.65rem;
             color: var(--text-muted);
-            text-decoration: line-through;
-            text-decoration-color: #555;
+            font-weight: bold;
         }
 
         /* Кастомный чекбокс */
         .checkbox-container {
-            display: inline-block;
             position: relative;
             cursor: pointer;
-            width: 28px;
-            height: 28px;
-            user-select: none;
+            width: 24px;
+            height: 24px;
         }
 
         .checkbox-container input {
             position: absolute;
             opacity: 0;
-            cursor: pointer;
-            height: 0;
-            width: 0;
+            width: 0; height: 0;
         }
 
         .checkmark {
             position: absolute;
-            top: 0;
-            left: 0;
-            height: 28px;
-            width: 28px;
+            top: 0; left: 0;
+            height: 24px; width: 24px;
             background-color: #111;
             border-radius: 4px;
             border: 2px solid #555;
-            transition: all 0.2s;
+            transition: 0.2s;
         }
 
-        .checkbox-container:hover input ~ .checkmark {
-            border-color: var(--marvel-red);
-        }
-
+        .checkbox-container:hover input ~ .checkmark { border-color: var(--marvel-red); }
         .checkbox-container input:checked ~ .checkmark {
             background-color: var(--marvel-red);
             border-color: var(--marvel-red);
@@ -220,21 +173,27 @@
             content: "";
             position: absolute;
             display: none;
-        }
-
-        .checkbox-container input:checked ~ .checkmark:after {
-            display: block;
-        }
-
-        .checkbox-container .checkmark:after {
-            left: 9px;
-            top: 4px;
-            width: 6px;
-            height: 12px;
+            left: 7px; top: 3px;
+            width: 5px; height: 10px;
             border: solid white;
-            border-width: 0 3px 3px 0;
+            border-width: 0 2px 2px 0;
             transform: rotate(45deg);
         }
+
+        .checkbox-container input:checked ~ .checkmark:after { display: block; }
+
+        .unreleased-tag {
+            color: var(--marvel-red);
+            font-size: 0.7rem;
+            border: 1px solid var(--marvel-red);
+            padding: 2px 6px;
+            border-radius: 3px;
+            margin-left: 10px;
+            text-transform: uppercase;
+        }
+
+        .movie-title { font-size: 1.1rem; font-weight: 500; }
+        .all-watched { color: var(--text-muted); text-decoration: line-through; }
     </style>
 </head>
 <body>
@@ -243,7 +202,8 @@
 
     <div class="container">
         <div class="controls">
-            <input type="text" id="movieInput" placeholder="Введите название фильма (добавьте '*' в конце, если он не вышел)...">
+            <input type="text" id="movieInput" placeholder="Название фильма/сериала (звездочка '*' = не вышел)">
+            <input type="number" id="seasonInput" min="1" placeholder="Сезоны" title="Кол-во сезонов (по умолчанию 1)">
             <button onclick="addMovie()">Добавить</button>
         </div>
 
@@ -251,145 +211,118 @@
             <table class="movie-table">
                 <thead>
                     <tr>
-                        <th>Название фильма</th>
-                        <th class="center">Просмотрено</th>
+                        <th style="width: 50%;">Проект</th>
+                        <th>Прогресс</th>
                     </tr>
                 </thead>
-                <tbody id="movieTableBody">
-                    </tbody>
+                <tbody id="movieTableBody"></tbody>
             </table>
         </div>
     </div>
 
     <script>
-        // Базовый список КВМ и других фильмов (включая будущие релизы)
-        const defaultMovies = [
-            { title: "Блэйд", watched: false, unreleased: true },
-            { title: "Вечные", watched: false, unreleased: false },
-            { title: "Громовержцы*", watched: false, unreleased: true },
-            { title: "Доктор Стрэндж", watched: false, unreleased: false },
-            { title: "Доктор Стрэндж: В мультивселенной безумия", watched: false, unreleased: false },
-            { title: "Дэдпул и Росомаха", watched: false, unreleased: false },
-            { title: "Железный человек", watched: false, unreleased: false },
-            { title: "Железный человек 2", watched: false, unreleased: false },
-            { title: "Железный человек 3", watched: false, unreleased: false },
-            { title: "Капитан Америка: Дивный новый мир", watched: false, unreleased: true },
-            { title: "Капитан Марвел", watched: false, unreleased: false },
-            { title: "Капитан Марвел 2 (Марвелы)", watched: false, unreleased: false },
-            { title: "Мстители", watched: false, unreleased: false },
-            { title: "Мстители: Война бесконечности", watched: false, unreleased: false },
-            { title: "Мстители: Секретные войны", watched: false, unreleased: true },
-            { title: "Мстители: Судный день", watched: false, unreleased: true },
-            { title: "Мстители: Финал", watched: false, unreleased: false },
-            { title: "Мстители: Эра Альтрона", watched: false, unreleased: false },
-            { title: "Невероятный Халк", watched: false, unreleased: false },
-            { title: "Первый мститель", watched: false, unreleased: false },
-            { title: "Первый мститель: Другая война", watched: false, unreleased: false },
-            { title: "Первый мститель: Противостояние", watched: false, unreleased: false },
-            { title: "Стражи Галактики", watched: false, unreleased: false },
-            { title: "Стражи Галактики. Часть 2", watched: false, unreleased: false },
-            { title: "Стражи Галактики. Часть 3", watched: false, unreleased: false },
-            { title: "Тор", watched: false, unreleased: false },
-            { title: "Тор 2: Царство тьмы", watched: false, unreleased: false },
-            { title: "Тор: Любовь и гром", watched: false, unreleased: false },
-            { title: "Тор: Рагнарёк", watched: false, unreleased: false },
-            { title: "Фантастическая четвёрка: Первые шаги", watched: false, unreleased: true },
-            { title: "Человек-муравей", watched: false, unreleased: false },
-            { title: "Человек-муравей и Оса", watched: false, unreleased: false },
-            { title: "Человек-муравей и Оса: Квантомания", watched: false, unreleased: false },
-            { title: "Человек-паук: Вдали от дома", watched: false, unreleased: false },
-            { title: "Человек-паук: Возвращение домой", watched: false, unreleased: false },
-            { title: "Человек-паук: Нет пути домой", watched: false, unreleased: false },
-            { title: "Черная Вдова", watched: false, unreleased: false },
-            { title: "Черная Пантера", watched: false, unreleased: false },
-            { title: "Черная Пантера: Ваканда навеки", watched: false, unreleased: false },
-            { title: "Шан-Чи и легенда десяти колец", watched: false, unreleased: false }
+        // Изначальный список с поддержкой сезонов
+        const initialMovies = [
+            { title: "Ванда/Вижн", seasons: 1, watched: [false], unreleased: false },
+            { title: "Локи", seasons: 2, watched: [false, false], unreleased: false },
+            { title: "Сорвиголова: Рожденный заново", seasons: 1, watched: [false], unreleased: true },
+            { title: "Мстители: Финал", seasons: 1, watched: [false], unreleased: false }
         ];
 
-        // Загрузка данных из localStorage или использование дефолтных
-        let movies = JSON.parse(localStorage.getItem('marvelMovies'));
+        let movies = JSON.parse(localStorage.getItem('marvelTracker_v2'));
         if (!movies) {
-            movies = defaultMovies;
-            saveData();
+            movies = initialMovies;
+            save();
         }
 
-        function saveData() {
-            localStorage.setItem('marvelMovies', JSON.stringify(movies));
+        function save() {
+            localStorage.setItem('marvelTracker_v2', JSON.stringify(movies));
         }
 
-        function renderTable() {
+        function render() {
             const tbody = document.getElementById('movieTableBody');
             tbody.innerHTML = '';
 
             // Сортировка по алфавиту
             movies.sort((a, b) => a.title.localeCompare(b.title, 'ru'));
 
-            movies.forEach((movie, index) => {
+            movies.forEach((movie, mIdx) => {
                 const tr = document.createElement('tr');
-                if (movie.watched) tr.classList.add('row-watched');
-
-                const unreleasedHtml = movie.unreleased ? `<span class="unreleased-tag">Не вышел</span>` : '';
+                const isFullyWatched = movie.watched.every(s => s === true);
+                
+                let progressHtml = `<div class="checkbox-group">`;
+                
+                for (let i = 0; i < movie.seasons; i++) {
+                    const isWatched = movie.watched[i];
+                    // Если сезонов больше 1, добавляем подпись S1, S2...
+                    const label = movie.seasons > 1 ? `<span class="season-label">S${i+1}</span>` : '';
+                    
+                    progressHtml += `
+                        <div class="season-item">
+                            ${label}
+                            <label class="checkbox-container">
+                                <input type="checkbox" ${isWatched ? 'checked' : ''} 
+                                       onchange="toggleSeason(${mIdx}, ${i})">
+                                <span class="checkmark"></span>
+                            </label>
+                        </div>
+                    `;
+                }
+                progressHtml += `</div>`;
 
                 tr.innerHTML = `
-                    <td class="title-cell">
-                        ${movie.title} ${unreleasedHtml}
+                    <td>
+                        <span class="movie-title ${isFullyWatched ? 'all-watched' : ''}">${movie.title}</span>
+                        ${movie.unreleased ? '<span class="unreleased-tag">Ожидается</span>' : ''}
                     </td>
-                    <td class="center">
-                        <label class="checkbox-container">
-                            <input type="checkbox" ${movie.watched ? 'checked' : ''} onchange="toggleWatched(${index})">
-                            <span class="checkmark"></span>
-                        </label>
-                    </td>
+                    <td>${progressHtml}</td>
                 `;
                 tbody.appendChild(tr);
             });
         }
 
-        function toggleWatched(index) {
-            movies[index].watched = !movies[index].watched;
-            saveData();
-            renderTable();
+        function toggleSeason(movieIdx, seasonIdx) {
+            movies[movieIdx].watched[seasonIdx] = !movies[movieIdx].watched[seasonIdx];
+            save();
+            render();
         }
 
         function addMovie() {
-            const input = document.getElementById('movieInput');
-            let title = input.value.trim();
+            const titleInput = document.getElementById('movieInput');
+            const seasonInput = document.getElementById('seasonInput');
             
-            if (title === '') return;
+            let title = titleInput.value.trim();
+            let seasonCount = parseInt(seasonInput.value) || 1;
 
-            // Если пользователь ставит звездочку в конце, помечаем как невышедший
+            if (!title) return;
+
             let isUnreleased = false;
             if (title.endsWith('*')) {
                 isUnreleased = true;
-                title = title.slice(0, -1).trim(); // убираем звездочку из названия
+                title = title.slice(0, -1).trim();
             }
 
-            // Проверка на дубликаты
-            if (movies.some(m => m.title.toLowerCase() === title.toLowerCase())) {
-                alert('Этот фильм уже есть в списке!');
-                return;
-            }
+            // Создаем массив статусов для сезонов, заполненный false
+            const watchedArray = new Array(seasonCount).fill(false);
 
             movies.push({
                 title: title,
-                watched: false,
+                seasons: seasonCount,
+                watched: watchedArray,
                 unreleased: isUnreleased
             });
 
-            input.value = '';
-            saveData();
-            renderTable();
+            titleInput.value = '';
+            seasonInput.value = '';
+            save();
+            render();
         }
 
-        // Обработка нажатия Enter в поле ввода
-        document.getElementById('movieInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                addMovie();
-            }
-        });
+        // Поддержка Enter
+        document.getElementById('movieInput').onkeypress = (e) => e.key === 'Enter' && addMovie();
+        document.getElementById('seasonInput').onkeypress = (e) => e.key === 'Enter' && addMovie();
 
-        // Первичный рендер при загрузке страницы
-        renderTable();
+        render();
     </script>
 </body>
 </html>
