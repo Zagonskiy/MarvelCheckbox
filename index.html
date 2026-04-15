@@ -296,38 +296,58 @@
             });
         }
 
-        // Рендер таблицы с группировкой по фазам
-        function renderTable() {
-            tbody.innerHTML = '';
+        // Словарь для перевода value из HTML в красивые заголовки
+const categoryNames = {
+    "0": "Вне фаз / Другие вселенные",
+    "1": "Фаза 1",
+    "2": "Фаза 2",
+    "3": "Фаза 3",
+    "4": "Фаза 4",
+    "5": "Фаза 5",
+    "6": "Фаза 6",
+    "7": "Фаза 7",
+    "8": "Фаза 8",
+    "cartoons": "Мультфильмы", // Впиши сюда value из твоего HTML
+    "other": "Прочее"          // Впиши сюда value из твоего HTML
+};
 
-    // Динамическая группировка
-            const grouped = {};
+function renderTable() {
+    tbody.innerHTML = '';
 
-            globalMovies.forEach(m => {
-                const phase = m.phase || 0;
-                if (!grouped[phase]) grouped[phase] = [];
-                grouped[phase].push(m);
-            });
+    const grouped = {};
 
-    // Получаем список всех существующих фаз и сортируем их по возрастанию
-            const existingPhases = Object.keys(grouped).map(Number).sort((a, b) => a - b);
+    globalMovies.forEach(m => {
+        // Теперь фаза может быть и строкой, поэтому || "0" (в кавычках)
+        const phase = m.phase || "0"; 
+        if (!grouped[phase]) grouped[phase] = [];
+        grouped[phase].push(m);
+    });
+
+    // Умная сортировка: сначала идут числовые фазы (0,1,2...), потом текстовые ("cartoons", "other")
+    const existingCategories = Object.keys(grouped).sort((a, b) => {
+        const numA = parseInt(a);
+        const numB = parseInt(b);
+        if (!isNaN(numA) && !isNaN(numB)) return numA - numB;
+        if (!isNaN(numA)) return -1; // Числа выше текстов
+        if (!isNaN(numB)) return 1;
+        return a.localeCompare(b);
+    });
 
     // Отрисовка
-            existingPhases.forEach(i => {
-        // Сортировка по алфавиту внутри фазы
-                grouped[i].sort((a, b) => a.title.localeCompare(b.title, 'ru'));
+    existingCategories.forEach(catKey => {
+        grouped[catKey].sort((a, b) => a.title.localeCompare(b.title, 'ru'));
 
-        // Заголовок фазы
-                const phaseTr = document.createElement('tr');
-        // Если ты добавил какие-то особые категории (например, value="99"), 
-        // можешь добавить для них отдельные названия в этот тернарник
-                const phaseName = i === 0 ? "Вне фаз / Другие вселенные" : `Фаза ${i}`;
+        const phaseTr = document.createElement('tr');
         
-                phaseTr.innerHTML = `<td colspan="2" class="phase-header">${phaseName}</td>`;
-                tbody.appendChild(phaseTr);
+        // Ищем название в словаре. Если забыл добавить - выведет само value
+        const phaseName = categoryNames[catKey] || `Категория: ${catKey}`;
+        
+        phaseTr.innerHTML = `<td colspan="2" class="phase-header">${phaseName}</td>`;
+        tbody.appendChild(phaseTr);
 
-        // Отрисовка проектов
-                grouped[i].forEach(movie => {
+        // Отрисовка проектов (этот код остается без изменений)
+        grouped[catKey].forEach(movie => {
+            // ... дальше твой старый код генерации tr (начиная с const usersData = movie.users || {};)
                     const tr = document.createElement('tr');
                     
                     // Безопасное получение данных текущего юзера
@@ -420,7 +440,7 @@
 
             let title = titleInput.value.trim();
             let seasonCount = parseInt(seasonInput.value) || 1;
-            let phase = parseInt(phaseSelect.value) || 0;
+            let phase = phaseSelect.value; // Теперь сохраняем значение прямо как есть (число или текст)
 
             if (!title) return;
             if (seasonCount < 1) seasonCount = 1;
