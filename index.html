@@ -300,29 +300,33 @@
         function renderTable() {
             tbody.innerHTML = '';
 
-            // Группируем проекты по фазам
+    // Динамическая группировка
             const grouped = {};
-            for (let i = 0; i <= 8; i++) grouped[i] = [];
 
             globalMovies.forEach(m => {
                 const phase = m.phase || 0;
-                if (grouped[phase]) grouped[phase].push(m);
+                if (!grouped[phase]) grouped[phase] = [];
+                grouped[phase].push(m);
             });
 
-            // Отрисовка
-            for (let i = 0; i <= 8; i++) {
-                if (grouped[i].length === 0) continue;
+    // Получаем список всех существующих фаз и сортируем их по возрастанию
+            const existingPhases = Object.keys(grouped).map(Number).sort((a, b) => a - b);
 
-                // Сортировка по алфавиту внутри фазы
+    // Отрисовка
+            existingPhases.forEach(i => {
+        // Сортировка по алфавиту внутри фазы
                 grouped[i].sort((a, b) => a.title.localeCompare(b.title, 'ru'));
 
-                // Заголовок фазы
+        // Заголовок фазы
                 const phaseTr = document.createElement('tr');
+        // Если ты добавил какие-то особые категории (например, value="99"), 
+        // можешь добавить для них отдельные названия в этот тернарник
                 const phaseName = i === 0 ? "Вне фаз / Другие вселенные" : `Фаза ${i}`;
+        
                 phaseTr.innerHTML = `<td colspan="2" class="phase-header">${phaseName}</td>`;
                 tbody.appendChild(phaseTr);
 
-                // Отрисовка проектов
+        // Отрисовка проектов
                 grouped[i].forEach(movie => {
                     const tr = document.createElement('tr');
                     
