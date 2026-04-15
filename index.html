@@ -55,6 +55,23 @@
         .auth-box input[type="color"] { width: 100%; height: 50px; border: none; background: transparent; cursor: pointer; margin-bottom: 20px; }
         .auth-box button { width: 100%; background: var(--marvel-red); color: white; border: none; padding: 15px; font-family: 'Oswald', sans-serif; font-size: 1.2rem; cursor: pointer; text-transform: uppercase; border-radius: 4px; }
 
+
+
+        .delete-btn {
+    background: transparent;
+    border: none;
+    color: #555;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: color 0.2s, transform 0.1s;
+    margin-left: auto; /* Прижмет кнопку к правому краю */
+}
+.delete-btn:hover {
+    color: var(--marvel-red);
+    transform: scale(1.1);
+}
+
+        
         /* --- Основной интерфейс --- */
         #app { display: none; width: 100%; max-width: 1000px; }
 
@@ -198,7 +215,7 @@
                     <option value="7">Фаза 7</option>
                     <option value="8">Фаза 8</option>
                     <option value="9">Мультфильм</option>
-                    <option value="0">Прочее</option>
+                    <option value="10">Прочее</option>
                 </select>
                 <button id="addBtn">Добавить</button>
             </div>
@@ -219,7 +236,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getFirestore, collection, onSnapshot, addDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        import { getFirestore, collection, onSnapshot, addDoc, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
         // ==========================================
         // ВСТАВЬ СЮДА СВОЙ КОНФИГ ИЗ FIREBASE!
@@ -352,6 +369,7 @@
                             <div class="progress-cell">
                                 ${progressHtml}
                                 ${dotsHtml}
+                                <button class="delete-btn" onclick="deleteProject('${movie.id}')" title="Удалить">🗑️</button>
                             </div>
                         </td>
                     `;
@@ -428,6 +446,13 @@
         document.getElementById('movieInput').addEventListener('keypress', enterHandler);
         document.getElementById('seasonInput').addEventListener('keypress', enterHandler);
 
+        window.deleteProject = async function(movieId) {
+            if (confirm("Точно удалить этот проект из глобальной базы?")) {
+                const movieRef = doc(db, "marvel_projects", movieId);
+                await deleteDoc(movieRef);
+            }
+        }
+        
     </script>
 </body>
 </html>
