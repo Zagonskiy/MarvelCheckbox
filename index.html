@@ -15,7 +15,11 @@
             --text-muted: #888888;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+        }
 
         body {
             font-family: 'Roboto', sans-serif;
@@ -32,7 +36,10 @@
         /* --- Авторизация --- */
         #authOverlay {
             position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%;
             background: rgba(0,0,0,0.9);
             display: flex;
             justify-content: center;
@@ -50,30 +57,66 @@
             max-width: 400px;
         }
 
-        .auth-box h2 { font-family: 'Oswald', sans-serif; text-transform: uppercase; margin-bottom: 20px; font-size: 2rem; }
-        .auth-box input[type="text"] { width: 100%; padding: 12px; margin-bottom: 15px; background: #111; color: white; border: 1px solid #444; border-radius: 4px; }
-        .auth-box input[type="color"] { width: 100%; height: 50px; border: none; background: transparent; cursor: pointer; margin-bottom: 20px; }
-        .auth-box button { width: 100%; background: var(--marvel-red); color: white; border: none; padding: 15px; font-family: 'Oswald', sans-serif; font-size: 1.2rem; cursor: pointer; text-transform: uppercase; border-radius: 4px; }
-
-
+        .auth-box h2 { 
+            font-family: 'Oswald', sans-serif; 
+            text-transform: uppercase; 
+            margin-bottom: 20px; 
+            font-size: 2rem; 
+        }
+        
+        .auth-box input[type="text"] { 
+            width: 100%; 
+            padding: 12px; 
+            margin-bottom: 15px; 
+            background: #111; 
+            color: white; 
+            border: 1px solid #444; 
+            border-radius: 4px; 
+        }
+        
+        .auth-box input[type="color"] { 
+            width: 100%; 
+            height: 50px; 
+            border: none; 
+            background: transparent; 
+            cursor: pointer; 
+            margin-bottom: 20px; 
+        }
+        
+        .auth-box button { 
+            width: 100%; 
+            background: var(--marvel-red); 
+            color: white; 
+            border: none; 
+            padding: 15px; 
+            font-family: 'Oswald', sans-serif; 
+            font-size: 1.2rem; 
+            cursor: pointer; 
+            text-transform: uppercase; 
+            border-radius: 4px; 
+        }
 
         .delete-btn {
-    background: transparent;
-    border: none;
-    color: #555;
-    font-size: 1.2rem;
-    cursor: pointer;
-    transition: color 0.2s, transform 0.1s;
-    margin-left: auto; /* Прижмет кнопку к правому краю */
-}
-.delete-btn:hover {
-    color: var(--marvel-red);
-    transform: scale(1.1);
-}
+            background: transparent;
+            border: none;
+            color: #555;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: color 0.2s, transform 0.1s;
+            margin-left: auto;
+        }
 
-        
+        .delete-btn:hover {
+            color: var(--marvel-red);
+            transform: scale(1.1);
+        }
+
         /* --- Основной интерфейс --- */
-        #app { display: none; width: 100%; max-width: 1000px; }
+        #app { 
+            display: none; 
+            width: 100%; 
+            max-width: 1000px; 
+        }
 
         .header-bar {
             display: flex;
@@ -94,8 +137,19 @@
             box-shadow: 0 5px 20px rgba(236, 29, 36, 0.4);
         }
 
-        .user-info { display: flex; align-items: center; gap: 10px; font-weight: 500; }
-        .user-color-indicator { width: 20px; height: 20px; border-radius: 50%; border: 2px solid #fff; }
+        .user-info { 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+            font-weight: 500; 
+        }
+        
+        .user-color-indicator { 
+            width: 20px; 
+            height: 20px; 
+            border-radius: 50%; 
+            border: 2px solid #fff; 
+        }
 
         .container {
             background: var(--panel-bg);
@@ -141,41 +195,179 @@
             border-radius: 4px;
             transition: 0.2s;
         }
-        .controls button:hover { background-color: #ff2a31; }
+
+        .controls button:hover { 
+            background-color: #ff2a31; 
+        }
 
         /* --- Таблица --- */
-        .table-wrapper { max-height: 65vh; overflow-y: auto; }
-        .table-wrapper::-webkit-scrollbar { width: 8px; }
-        .table-wrapper::-webkit-scrollbar-thumb { background: var(--marvel-red); border-radius: 4px; }
+        .table-wrapper { 
+            max-height: 65vh; 
+            overflow-y: auto; 
+        }
+        
+        .table-wrapper::-webkit-scrollbar { 
+            width: 8px; 
+        }
+        
+        .table-wrapper::-webkit-scrollbar-thumb { 
+            background: var(--marvel-red); 
+            border-radius: 4px; 
+        }
 
-        .movie-table { width: 100%; border-collapse: collapse; }
-        .movie-table th { background: #111; color: var(--text-muted); padding: 15px; text-align: left; position: sticky; top: 0; z-index: 10; font-family: 'Oswald', sans-serif; text-transform: uppercase; }
-        .movie-table td { padding: 15px; border-bottom: 1px solid #2a2a2a; vertical-align: middle; }
-        .movie-table tr:hover td { background: rgba(255,255,255,0.02); }
+        .movie-table { 
+            width: 100%; 
+            border-collapse: collapse; 
+        }
+        
+        .movie-table th { 
+            background: #111; 
+            color: var(--text-muted); 
+            padding: 15px; 
+            text-align: left; 
+            position: sticky; 
+            top: 0; 
+            z-index: 10; 
+            font-family: 'Oswald', sans-serif; 
+            text-transform: uppercase; 
+        }
+        
+        .movie-table td { 
+            padding: 15px; 
+            border-bottom: 1px solid #2a2a2a; 
+            vertical-align: middle; 
+        }
+        
+        .movie-table tr:hover td { 
+            background: rgba(255,255,255,0.02); 
+        }
 
-        .phase-header { background: #1a1a1a; font-family: 'Oswald', sans-serif; color: var(--marvel-red); font-size: 1.2rem; text-transform: uppercase; letter-spacing: 1px; border-bottom: 2px solid #333 !important; }
+        .phase-header { 
+            background: #1a1a1a; 
+            font-family: 'Oswald', sans-serif; 
+            color: var(--marvel-red); 
+            font-size: 1.2rem; 
+            text-transform: uppercase; 
+            letter-spacing: 1px; 
+            border-bottom: 2px solid #333 !important; 
+        }
 
         /* --- Чекбоксы и точки --- */
-        .progress-cell { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
-        .checkbox-group { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
-        .season-item { display: flex; flex-direction: column; align-items: center; gap: 4px; }
-        .season-label { font-size: 0.7rem; color: var(--text-muted); font-weight: bold; }
+        .progress-cell { 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            gap: 20px; 
+        }
         
-        .checkbox-container { position: relative; cursor: pointer; width: 24px; height: 24px; }
-        .checkbox-container input { position: absolute; opacity: 0; width: 0; height: 0; }
-        .checkmark { position: absolute; top: 0; left: 0; height: 24px; width: 24px; background-color: #111; border-radius: 4px; border: 2px solid #555; transition: 0.2s; }
-        .checkbox-container:hover input ~ .checkmark { border-color: var(--marvel-red); }
-        .checkbox-container input:checked ~ .checkmark { background-color: var(--marvel-red); border-color: var(--marvel-red); }
-        .checkmark:after { content: ""; position: absolute; display: none; left: 7px; top: 3px; width: 5px; height: 10px; border: solid white; border-width: 0 2px 2px 0; transform: rotate(45deg); }
-        .checkbox-container input:checked ~ .checkmark:after { display: block; }
+        .checkbox-group { 
+            display: flex; 
+            flex-wrap: wrap; 
+            gap: 10px; 
+            align-items: center; 
+        }
+        
+        .season-item { 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            gap: 4px; 
+        }
+        
+        .season-label { 
+            font-size: 0.7rem; 
+            color: var(--text-muted); 
+            font-weight: bold; 
+        }
+        
+        .checkbox-container { 
+            position: relative; 
+            cursor: pointer; 
+            width: 24px; 
+            height: 24px; 
+        }
+        
+        .checkbox-container input { 
+            position: absolute; 
+            opacity: 0; 
+            width: 0; 
+            height: 0; 
+        }
+        
+        .checkmark { 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            height: 24px; 
+            width: 24px; 
+            background-color: #111; 
+            border-radius: 4px; 
+            border: 2px solid #555; 
+            transition: 0.2s; 
+        }
+        
+        .checkbox-container:hover input ~ .checkmark { 
+            border-color: var(--marvel-red); 
+        }
+        
+        .checkbox-container input:checked ~ .checkmark { 
+            background-color: var(--marvel-red); 
+            border-color: var(--marvel-red); 
+        }
+        
+        .checkmark:after { 
+            content: ""; 
+            position: absolute; 
+            display: none; 
+            left: 7px; 
+            top: 3px; 
+            width: 5px; 
+            height: 10px; 
+            border: solid white; 
+            border-width: 0 2px 2px 0; 
+            transform: rotate(45deg); 
+        }
+        
+        .checkbox-container input:checked ~ .checkmark:after { 
+            display: block; 
+        }
 
         /* Контейнер для точек других пользователей */
-        .dots-container { display: flex; gap: 5px; flex-wrap: wrap; max-width: 150px; justify-content: flex-end; }
-        .user-dot { width: 12px; height: 12px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 0 5px rgba(0,0,0,0.5); }
+        .dots-container { 
+            display: flex; 
+            gap: 5px; 
+            flex-wrap: wrap; 
+            max-width: 150px; 
+            justify-content: flex-end; 
+        }
+        
+        .user-dot { 
+            width: 12px; 
+            height: 12px; 
+            border-radius: 50%; 
+            border: 1px solid rgba(255,255,255,0.2); 
+            box-shadow: 0 0 5px rgba(0,0,0,0.5); 
+        }
 
-        .unreleased-tag { color: var(--marvel-red); font-size: 0.7rem; border: 1px solid var(--marvel-red); padding: 2px 6px; border-radius: 3px; margin-left: 10px; text-transform: uppercase; }
-        .movie-title { font-size: 1.1rem; font-weight: 500; }
-        .all-watched { color: var(--text-muted); text-decoration: line-through; }
+        .unreleased-tag { 
+            color: var(--marvel-red); 
+            font-size: 0.7rem; 
+            border: 1px solid var(--marvel-red); 
+            padding: 2px 6px; 
+            border-radius: 3px; 
+            margin-left: 10px; 
+            text-transform: uppercase; 
+        }
+        
+        .movie-title { 
+            font-size: 1.1rem; 
+            font-weight: 500; 
+        }
+        
+        .all-watched { 
+            color: var(--text-muted); 
+            text-decoration: line-through; 
+        }
     </style>
 </head>
 <body>
@@ -239,7 +431,8 @@
         import { getFirestore, collection, onSnapshot, addDoc, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
         // ==========================================
-        // ВСТАВЬ СЮДА СВОЙ КОНФИГ ИЗ FIREBASE!
+        // ВАЖНО: Тебе нужно вставить сюда ключи 
+        // из настроек твоего проекта в Firebase Console
         // ==========================================
         const firebaseConfig = {
             apiKey: "ТВОЙ_API_KEY",
@@ -296,66 +489,62 @@
             });
         }
 
-        // Словарь для перевода value из HTML в красивые заголовки
-const categoryNames = {
-    "0": "Вне фаз / Другие вселенные",
-    "1": "Фаза 1",
-    "2": "Фаза 2",
-    "3": "Фаза 3",
-    "4": "Фаза 4",
-    "5": "Фаза 5",
-    "6": "Фаза 6",
-    "7": "Фаза 7",
-    "8": "Фаза 8",
-    "cartoons": "Мультфильмы", // Впиши сюда value из твоего HTML
-    "other": "Прочее"          // Впиши сюда value из твоего HTML
-};
+        // ИСПРАВЛЕНО: Ключи теперь совпадают со значениями (value) из HTML (<option value="9"> и <option value="10">)
+        const categoryNames = {
+            "0": "Вне фаз / Другие вселенные",
+            "1": "Фаза 1",
+            "2": "Фаза 2",
+            "3": "Фаза 3",
+            "4": "Фаза 4",
+            "5": "Фаза 5",
+            "6": "Фаза 6",
+            "7": "Фаза 7",
+            "8": "Фаза 8",
+            "9": "Мультфильмы", 
+            "10": "Прочее"        
+        };
 
-function renderTable() {
-    tbody.innerHTML = '';
+        function renderTable() {
+            tbody.innerHTML = '';
 
-    const grouped = {};
+            const grouped = {};
 
-    globalMovies.forEach(m => {
-        // Теперь фаза может быть и строкой, поэтому || "0" (в кавычках)
-        const phase = m.phase || "0"; 
-        if (!grouped[phase]) grouped[phase] = [];
-        grouped[phase].push(m);
-    });
+            globalMovies.forEach(m => {
+                const phase = m.phase || "0"; 
+                if (!grouped[phase]) grouped[phase] = [];
+                grouped[phase].push(m);
+            });
 
-    // Умная сортировка: сначала идут числовые фазы (0,1,2...), потом текстовые ("cartoons", "other")
-    const existingCategories = Object.keys(grouped).sort((a, b) => {
-        const numA = parseInt(a);
-        const numB = parseInt(b);
-        if (!isNaN(numA) && !isNaN(numB)) return numA - numB;
-        if (!isNaN(numA)) return -1; // Числа выше текстов
-        if (!isNaN(numB)) return 1;
-        return a.localeCompare(b);
-    });
+            // Сортировка категорий
+            const existingCategories = Object.keys(grouped).sort((a, b) => {
+                const numA = parseInt(a);
+                const numB = parseInt(b);
+                if (!isNaN(numA) && !isNaN(numB)) return numA - numB;
+                if (!isNaN(numA)) return -1; 
+                if (!isNaN(numB)) return 1;
+                return a.localeCompare(b);
+            });
 
-    // Отрисовка
-    existingCategories.forEach(catKey => {
-        grouped[catKey].sort((a, b) => a.title.localeCompare(b.title, 'ru'));
+            // Отрисовка
+            existingCategories.forEach(catKey => {
+                grouped[catKey].sort((a, b) => a.title.localeCompare(b.title, 'ru'));
 
-        const phaseTr = document.createElement('tr');
-        
-        // Ищем название в словаре. Если забыл добавить - выведет само value
-        const phaseName = categoryNames[catKey] || `Категория: ${catKey}`;
-        
-        phaseTr.innerHTML = `<td colspan="2" class="phase-header">${phaseName}</td>`;
-        tbody.appendChild(phaseTr);
+                const phaseTr = document.createElement('tr');
+                
+                // Ищем название в исправленном словаре
+                const phaseName = categoryNames[catKey] || `Категория: ${catKey}`;
+                
+                phaseTr.innerHTML = `<td colspan="2" class="phase-header">${phaseName}</td>`;
+                tbody.appendChild(phaseTr);
 
-        // Отрисовка проектов (этот код остается без изменений)
-        grouped[catKey].forEach(movie => {
-            // ... дальше твой старый код генерации tr (начиная с const usersData = movie.users || {};)
+                // Отрисовка проектов 
+                grouped[catKey].forEach(movie => {
                     const tr = document.createElement('tr');
                     
-                    // Безопасное получение данных текущего юзера
                     const usersData = movie.users || {};
                     const myData = usersData[currentUser.name] || { watched: new Array(movie.seasons).fill(false) };
                     const isFullyWatchedByMe = myData.watched.every(s => s === true);
 
-                    // Генерация чекбоксов для личного прогресса
                     let progressHtml = `<div class="checkbox-group">`;
                     for (let s = 0; s < movie.seasons; s++) {
                         const isWatched = myData.watched[s] || false;
@@ -373,7 +562,6 @@ function renderTable() {
                     }
                     progressHtml += `</div>`;
 
-                    // Генерация точек пользователей, которые посмотрели проект ПОЛНОСТЬЮ
                     let dotsHtml = `<div class="dots-container">`;
                     Object.entries(usersData).forEach(([username, data]) => {
                         if (data.watched && data.watched.length === movie.seasons && data.watched.every(v => v === true)) {
@@ -401,13 +589,11 @@ function renderTable() {
                 });
             });
 
-            // Навешиваем слушатели на все чекбоксы
             document.querySelectorAll('.checkbox-container input').forEach(checkbox => {
                 checkbox.addEventListener('change', handleCheckboxChange);
             });
         }
 
-        // Обработка клика по чекбоксу с отправкой в Firebase
         async function handleCheckboxChange(e) {
             const movieId = e.target.getAttribute('data-movie-id');
             const seasonIdx = parseInt(e.target.getAttribute('data-season-idx'));
@@ -424,7 +610,6 @@ function renderTable() {
                 };
             }
             
-            // Важно: обновляем цвет, если юзер его сменил с прошлого раза
             usersData[currentUser.name].color = currentUser.color;
             usersData[currentUser.name].watched[seasonIdx] = isChecked;
 
@@ -432,7 +617,6 @@ function renderTable() {
             await updateDoc(movieRef, { users: usersData });
         }
 
-        // Добавление нового проекта
         document.getElementById('addBtn').addEventListener('click', async () => {
             const titleInput = document.getElementById('movieInput');
             const seasonInput = document.getElementById('seasonInput');
@@ -440,7 +624,7 @@ function renderTable() {
 
             let title = titleInput.value.trim();
             let seasonCount = parseInt(seasonInput.value) || 1;
-            let phase = phaseSelect.value; // Теперь сохраняем значение прямо как есть (число или текст)
+            let phase = phaseSelect.value; 
 
             if (!title) return;
             if (seasonCount < 1) seasonCount = 1;
@@ -451,13 +635,12 @@ function renderTable() {
                 title = title.slice(0, -1).trim();
             }
 
-            // Добавляем документ в коллекцию Firestore
             await addDoc(moviesCol, {
                 title: title,
                 seasons: seasonCount,
                 phase: phase,
                 unreleased: isUnreleased,
-                users: {} // Пока никто не посмотрел
+                users: {} 
             });
 
             titleInput.value = '';
@@ -465,7 +648,6 @@ function renderTable() {
             phaseSelect.value = '0';
         });
 
-        // Энтер в инпутах
         const enterHandler = (e) => { if (e.key === 'Enter') document.getElementById('addBtn').click(); };
         document.getElementById('movieInput').addEventListener('keypress', enterHandler);
         document.getElementById('seasonInput').addEventListener('keypress', enterHandler);
