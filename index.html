@@ -64,7 +64,7 @@
             font-size: 2rem; 
         }
         
-        .auth-box input[type="text"] { 
+        .auth-box input[type="text"], .auth-box input[type="number"] { 
             width: 100%; 
             padding: 12px; 
             margin-bottom: 15px; 
@@ -72,6 +72,7 @@
             color: white; 
             border: 1px solid #444; 
             border-radius: 4px; 
+            outline: none;
         }
         
         .auth-box input[type="color"] { 
@@ -479,6 +480,11 @@
         let currentUser = JSON.parse(localStorage.getItem('marvelAgent'));
         let globalMovies = [];
         let searchTerm = ""; // Глобальный поиск
+
+        window.logout = function() {
+            localStorage.removeItem('marvelAgent');
+            location.reload();
+        };
 
         // 8 Базовых цветов
         const BASE_COLORS = ['#EC1D24', '#0078D7', '#107C10', '#FFB900', '#881798', '#00B294', '#FF8C00', '#E81123'];
