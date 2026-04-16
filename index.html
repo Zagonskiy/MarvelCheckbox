@@ -368,6 +368,22 @@
             color: var(--text-muted); 
             text-decoration: line-through; 
         }
+
+        /* --- Новые стили для Модалки, Палитры и Прогресс-баров --- */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; justify-content: center; align-items: center; z-index: 2000; }
+        
+        .color-grid { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 20px; }
+        .color-circle { width: 40px; height: 40px; border-radius: 50%; cursor: pointer; border: 3px solid transparent; transition: 0.2s; }
+        .color-circle.selected { border-color: white; transform: scale(1.1); box-shadow: 0 0 10px rgba(255,255,255,0.5); }
+        .color-circle.disabled { opacity: 0.2; cursor: not-allowed; border-color: #000; }
+
+        .progress-container { background: #1a1a1a; padding: 15px 20px; border-bottom: 3px solid var(--marvel-red); }
+        .user-progress { margin-bottom: 10px; }
+        .user-progress:last-child { margin-bottom: 0; }
+        .progress-info { display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: bold; margin-bottom: 5px; text-transform: uppercase; }
+        .progress-bar-bg { width: 100%; height: 12px; background: #333; border-radius: 6px; overflow: hidden; }
+        .progress-bar-fill { height: 100%; transition: width 0.4s ease-out; }
+        
     </style>
 </head>
 <body>
@@ -376,8 +392,8 @@
         <div class="auth-box">
             <h2>Регистрация Агента</h2>
             <input type="text" id="usernameInput" placeholder="Введите позывной (никнейм)..." autocomplete="off">
-            <label style="display:block; text-align:left; margin-bottom:5px; color:#888; font-size:0.9rem;">Цвет вашей отметки:</label>
-            <input type="color" id="colorInput" value="#EC1D24">
+            <label style="display:block; text-align:left; margin-bottom:10px; color:#888; font-size:0.9rem;">Выберите свободный цвет:</label>
+            <div id="colorGrid" class="color-grid"></div>
             <button id="loginBtn">Войти в систему</button>
         </div>
     </div>
@@ -393,23 +409,34 @@
         </div>
 
         <div class="container">
-            <div class="controls">
-                <input type="text" id="movieInput" placeholder="Название фильма/сериала (* если не вышел)">
-                <input type="number" id="seasonInput" min="1" placeholder="Сезоны" title="Кол-во сезонов">
-                <select id="phaseSelect">
-                    <option value="0">Вне фаз</option>
-                    <option value="1">Фаза 1</option>
-                    <option value="2">Фаза 2</option>
-                    <option value="3">Фаза 3</option>
-                    <option value="4">Фаза 4</option>
-                    <option value="5">Фаза 5</option>
-                    <option value="6">Фаза 6</option>
-                    <option value="7">Фаза 7</option>
-                    <option value="8">Фаза 8</option>
-                    <option value="9">Мультфильм</option>
-                    <option value="10">Прочее</option>
-                </select>
-                <button id="addBtn">Добавить</button>
+            <div id="progressContainer" class="progress-container"></div>
+
+            <div class="controls" style="justify-content: space-between;">
+                <input type="text" id="searchInput" placeholder="🔍 Поиск проекта (введите название)..." style="flex: 1;">
+                <button id="openModalBtn" style="flex: 0 0 auto; width: 50px; font-size: 1.5rem; padding: 10px;">+</button>
+            </div>
+
+            <div id="addModal" class="modal-overlay" style="display: none;">
+                <div class="auth-box">
+                    <h2 style="font-size: 1.5rem;">Добавить проект</h2>
+                    <input type="text" id="movieInput" placeholder="Название (* если не вышел)">
+                    <input type="number" id="seasonInput" min="1" placeholder="Кол-во сезонов (по ум. 1)">
+                    <select id="phaseSelect" style="width:100%; padding:12px; margin-bottom:20px; background:#111; color:white; border:1px solid #444; border-radius:4px;">
+                        <option value="0">Вне фаз</option>
+                        <option value="1">Фаза 1</option>
+                        <option value="2">Фаза 2</option>
+                        <option value="3">Фаза 3</option>
+                        <option value="4">Фаза 4</option>
+                        <option value="5">Фаза 5</option>
+                        <option value="6">Фаза 6</option>
+                        <option value="7">Фаза 7</option>
+                        <option value="8">Фаза 8</option>
+                        <option value="9">Мультфильмы</option>
+                        <option value="10">Прочее</option>
+                    </select>
+                    <button id="addBtn">Добавить в базу</button>
+                    <button id="closeModalBtn" style="background:transparent; color:#888; border:1px solid #555; margin-top:10px;">Отмена</button>
+                </div>
             </div>
 
             <div class="table-wrapper">
@@ -451,43 +478,84 @@
         // Локальное состояние
         let currentUser = JSON.parse(localStorage.getItem('marvelAgent'));
         let globalMovies = [];
+        let searchTerm = ""; // Глобальный поиск
 
-        // UI Элементы
+        // 8 Базовых цветов
+        const BASE_COLORS = ['#EC1D24', '#0078D7', '#107C10', '#FFB900', '#881798', '#00B294', '#FF8C00', '#E81123'];
+        let selectedColor = BASE_COLORS[0];
+
         const authOverlay = document.getElementById('authOverlay');
         const appContainer = document.getElementById('app');
         const tbody = document.getElementById('movieTableBody');
 
-        // Инициализация авторизации
+        // Слушаем базу данных ВСЕГДА (даже до логина, чтобы знать занятые цвета)
+        onSnapshot(moviesCol, (snapshot) => {
+            globalMovies = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            renderColorGrid(); // Обновляем палитру
+            if (currentUser) {
+                renderTable();
+                renderProgressBars();
+            }
+        });
+
+        // Отрисовка палитры 8 цветов
+        function renderColorGrid() {
+            const grid = document.getElementById('colorGrid');
+            if(!grid) return;
+            grid.innerHTML = '';
+            
+            // Собираем занятые цвета из базы
+            const takenColors = new Set();
+            globalMovies.forEach(m => {
+                if(m.users) Object.values(m.users).forEach(u => takenColors.add(u.color.toUpperCase()));
+            });
+
+            BASE_COLORS.forEach(color => {
+                const circle = document.createElement('div');
+                circle.className = 'color-circle';
+                circle.style.backgroundColor = color;
+                
+                const isTaken = takenColors.has(color.toUpperCase());
+                // Если цвет занят и это не мой текущий цвет - блокируем
+                if (isTaken && (!currentUser || currentUser.color.toUpperCase() !== color.toUpperCase())) {
+                    circle.classList.add('disabled');
+                    circle.title = "Цвет уже занят другим агентом";
+                } else {
+                    if (selectedColor === color) circle.classList.add('selected');
+                    circle.addEventListener('click', () => {
+                        selectedColor = color;
+                        renderColorGrid();
+                    });
+                }
+                grid.appendChild(circle);
+            });
+        }
+
         if (currentUser) {
             initApp();
+        } else {
+            renderColorGrid();
         }
 
         document.getElementById('loginBtn').addEventListener('click', () => {
             const name = document.getElementById('usernameInput').value.trim();
-            const color = document.getElementById('colorInput').value;
             if (!name) return alert('Введите позывной!');
+            // Проверка: вдруг он умудрился кликнуть заблокированный цвет
+            const circle = document.querySelector('.color-circle.selected');
+            if(circle && circle.classList.contains('disabled')) return alert('Цвет занят!');
             
-            currentUser = { name, color };
+            currentUser = { name, color: selectedColor };
             localStorage.setItem('marvelAgent', JSON.stringify(currentUser));
             initApp();
         });
-
-        window.logout = function() {
-            localStorage.removeItem('marvelAgent');
-            location.reload();
-        }
 
         function initApp() {
             authOverlay.style.display = 'none';
             appContainer.style.display = 'block';
             document.getElementById('displayUsername').innerText = currentUser.name;
             document.getElementById('displayColor').style.backgroundColor = currentUser.color;
-
-            // Слушаем базу данных в реальном времени
-            onSnapshot(moviesCol, (snapshot) => {
-                globalMovies = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                renderTable();
-            });
+            renderTable();
+            renderProgressBars();
         }
 
         // ИСПРАВЛЕНО: Ключи теперь совпадают со значениями (value) из HTML (<option value="9"> и <option value="10">)
@@ -505,9 +573,55 @@
             "10": "Прочее"        
         };
 
+        // --- Логика Модалки и Поиска ---
+        document.getElementById('openModalBtn').addEventListener('click', () => document.getElementById('addModal').style.display = 'flex');
+        document.getElementById('closeModalBtn').addEventListener('click', () => document.getElementById('addModal').style.display = 'none');
+        
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            searchTerm = e.target.value.toLowerCase();
+            renderTable(); // Перерисовываем таблицу при вводе
+        });
+
+        // --- Логика Прогресс-баров ---
+        function renderProgressBars() {
+            const container = document.getElementById('progressContainer');
+            container.innerHTML = '';
+            
+            let totalSeasons = 0;
+            const userStats = {}; // { Имя: {color, watched} }
+
+            globalMovies.forEach(m => {
+                totalSeasons += m.seasons;
+                const users = m.users || {};
+                Object.entries(users).forEach(([name, data]) => {
+                    if (!userStats[name]) userStats[name] = { color: data.color, watched: 0 };
+                    // Считаем сколько галочек true поставил человек
+                    userStats[name].watched += data.watched.filter(v => v === true).length;
+                });
+            });
+
+            if (totalSeasons === 0) return;
+
+            // Рисуем бары для каждого пользователя
+            Object.entries(userStats).forEach(([name, stats]) => {
+                const percent = (stats.watched / totalSeasons) * 100;
+                container.innerHTML += `
+                    <div class="user-progress">
+                        <div class="progress-info">
+                            <span style="color: ${stats.color}">${name}</span>
+                            <span>${stats.watched} / ${totalSeasons} Эпизодов (${percent.toFixed(1)}%)</span>
+                        </div>
+                        <div class="progress-bar-bg">
+                            <div class="progress-bar-fill" style="width: ${percent}%; background-color: ${stats.color};"></div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // --- Обновленный renderTable с поддержкой поиска ---
         function renderTable() {
             tbody.innerHTML = '';
-
             const grouped = {};
 
             globalMovies.forEach(m => {
@@ -516,7 +630,6 @@
                 grouped[phase].push(m);
             });
 
-            // Сортировка категорий
             const existingCategories = Object.keys(grouped).sort((a, b) => {
                 const numA = parseInt(a);
                 const numB = parseInt(b);
@@ -526,22 +639,24 @@
                 return a.localeCompare(b);
             });
 
-            // Отрисовка
             existingCategories.forEach(catKey => {
-                grouped[catKey].sort((a, b) => a.title.localeCompare(b.title, 'ru'));
+                // Фильтруем фильмы по строке поиска
+                const filteredMovies = grouped[catKey].filter(movie => 
+                    movie.title.toLowerCase().includes(searchTerm)
+                );
+
+                // Если в категории после поиска не осталось фильмов - пропускаем ее
+                if (filteredMovies.length === 0) return;
+
+                filteredMovies.sort((a, b) => a.title.localeCompare(b.title, 'ru'));
 
                 const phaseTr = document.createElement('tr');
-                
-                // Ищем название в исправленном словаре
                 const phaseName = categoryNames[catKey] || `Категория: ${catKey}`;
-                
                 phaseTr.innerHTML = `<td colspan="2" class="phase-header">${phaseName}</td>`;
                 tbody.appendChild(phaseTr);
 
-                // Отрисовка проектов 
-                grouped[catKey].forEach(movie => {
+                filteredMovies.forEach(movie => {
                     const tr = document.createElement('tr');
-                    
                     const usersData = movie.users || {};
                     const myData = usersData[currentUser.name] || { watched: new Array(movie.seasons).fill(false) };
                     const isFullyWatchedByMe = myData.watched.every(s => s === true);
@@ -647,6 +762,8 @@
             titleInput.value = '';
             seasonInput.value = '';
             phaseSelect.value = '0';
+
+            document.getElementById('addModal').style.display = 'none';
         });
 
         const enterHandler = (e) => { if (e.key === 'Enter') document.getElementById('addBtn').click(); };
